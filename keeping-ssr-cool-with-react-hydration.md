@@ -160,12 +160,9 @@ After: Styling icons locally and disable Font Awesome's CSS
 # Conditional Rendering is not your friend
 
 
-    if (small) {
-      return <MobileApp />
-    } else {
-      return <DesktopApp />
-    }
- 
+  ![inline](images/conditional-code.png)
+
+^ https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=javascript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%250A%2520%2520%2520%2520if%2520(small)%2520%257B%250A%2520%2520%2520%2520%2520%2520return%2520%253CMobileApp%2520%252F%253E%250A%2520%2520%2520%2520%257D%2520else%2520%257B%250A%2520%2520%2520%2520%2520%2520return%2520%253CDesktopApp%2520%252F%253E%250A%2520%2520%2520%2520%257D%250A%2520
 
 
 ---
@@ -202,9 +199,18 @@ When building a site you might run into the `window is undefined` or `document i
 
 Accessing browser specific elements in a server context results in errors.
 
+
+
+---
+
+
+# Error: Window is undefined
+
+
+
 Your first inclination to resolve the undefined Window error might be to write something like:
 
-`typeof window !== undefined ? // render component : // return null`
+![inline](images/undefined-window-code.png)
 
 ---
 
@@ -214,6 +220,7 @@ However, ReactDOM.hydrate:
   - expects that the rendered content is identical between the server and the client.
   -  does not guarantee that attribute differences will be patched up in case of mismatches.
 
+^https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=javascript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%250A%2520%2520%2520%2520typeof%2520window%2520!%253D%253D%2520undefined%2520%253F%2520%252F%252F%2520render%2520component%2520%253A%2520%252F%252F%2520return%2520null
 
 ---
 
@@ -228,16 +235,13 @@ It's better to wrap React that can only render when Window or document is define
 
 # Error: Document is undefined
 
-function Example() {
-  const [count, setCount] = useState(0);
+![inline](images/useeffect-code.png)
 
-  useEffect(() => {
-    document.title = `You clicked ${count} times`;
-  });
-}
+
 
 (example from React docs)
 
+^https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=javascript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=function%2520Example()%2520%257B%250A%2520%2520const%2520%255Bcount%252C%2520setCount%255D%2520%253D%2520useState(0)%253B%250A%250A%2520%2520useEffect(()%2520%253D%253E%2520%257B%250A%2520%2520%2520%2520document.title%2520%253D%2520%2560You%2520clicked%2520%2524%257Bcount%257D%2520times%2560%253B%250A%2520%2520%257D)%253B%250A%257D
 
 
 ---
