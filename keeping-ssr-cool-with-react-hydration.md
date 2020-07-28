@@ -153,22 +153,6 @@ After: Styling icons locally and disable Font Awesome's CSS
 
 ^ Now you'll notice that the styling of the icons is consistent as the application loads
 
----
-
-
-
-
-
-# Conditional Rendering is 
-
-
-
-    if (small) {
-      return <MobileApp />
-    } else {
-      return <DesktopApp />
-    }
- 
 
 
 ---
