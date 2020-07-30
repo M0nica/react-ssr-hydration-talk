@@ -90,7 +90,14 @@ SSR apps tend to have faster initial loading times and better SEO than client-si
 
 ---
 
-# Important Note
+# It looks great in development...What could go wrong? 😅
+
+ - Layout shifts that only appear in production
+ - Errors that only appear at build-time
+
+---
+
+# Missing Data on Server-Side ⚠️
 
 - User or browser-specific data is not available in the server when static HTML for the site is generated (i.e., window size, authentication status, local storage etc)
 
@@ -101,12 +108,7 @@ SSR apps tend to have faster initial loading times and better SEO than client-si
 ^ In this image you'll see that the store location data, my username and items in shopping cart were not available on initial page load. Patterns like this can be common on server-side rendered applications.
 
 ---
-# What could go wrong? 😅
 
- - Layout shifts that only appear in production
- - Errors that only appear at build-time
-
----
 
 # Debugging SSG Hydration Issues 🐞
 
@@ -139,7 +141,7 @@ Before: Styled icons with CSS from Font Awesome NPM Package
 
 ![](images/jsstocss.png)
 
-# Solution
+# Solution for Icons Resizing on Load
 
 - Replicate the final styling with local CSS without relying on FontAwesome's external CSS which required JavaScript to be applied
 
@@ -157,6 +159,28 @@ After: Styling icons locally and disable Font Awesome's CSS
 
 ---
 
+# Immutable Layout
+
+- Avoid unnecessary layout shifts during page load
+
+![left](images/shifting-items.gif)
+
+^ So the previous issue is related to a much larger issue of handling CSS on the server-side
+
+---
+# Immutable Layout
+- Implement layouts with placeholder/gap for expected client-side content
+
+* Use CSS instead of JS to handle the layout of the page
+
+![right](images/shifting-items.gif)
+
+^Another culprit in the previous example was using JS to position content instead of media queries. CSS loads before JS and is less resource-intensive. This can be a common issue when loading the page as there may still be some data unavailable as the page loads. You ca n try to design around this by leaving room for data to come in, for example in the Target nav there was no shift as the user/store specific data loaded. You should also use CSS instead of JavaScript for styling ;) 
+
+^Learn more at: https://www.speedpatterns.com/patterns/immutable_layout.html
+
+---
+
 # Conditional Rendering is not your friend
 
 
@@ -169,10 +193,35 @@ After: Styling icons locally and disable Font Awesome's CSS
 
 # Conditional Rendering is not your friend
 
-- There's no way to consistently know the browser size in the server which leads to strange layout shifts when the initial positioning is incorrect. 
+- With the `matchMedia()` Web API  you can't reliably detect the browser size in the server which leads to strange layout shifts when the initial positioning is incorrect. 
 
+---
+
+# Conditional Rendering is not your friend
 - Use CSS media queries directly or a library like arts/fresnel that wraps all `Media` components in css. 
-# Error: Document or Window is undefined 
+
+
+---
+
+
+![inline](images/fresno-example.png)
+
+
+^ Fresnel example, import createMedia from Fresnel, define the breakpoints and then export MediaContextProvider to wrap the entire app in. Then you can use Fresnel's media component to render components based on the predefined breakpoints. The final step is passing mediaStyle into a <style> tag in the head of the document so that CSS can be generated from fresnel markup and be rendered on the server. https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=javascript&ds=true&dsyoff=0px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=import%2520React%2520from%2520%2522react%2522%250Aimport%2520ReactDOM%2520from%2520%2522react-dom%2522%250Aimport%2520%257B%2520createMedia%2520%257D%2520from%2520%2522%2540artsy%252Ffresnel%2522%250A%250Aconst%2520%257B%2520MediaContextProvider%252C%2520Media%2520%257D%2520%253D%2520createMedia(%257B%250A%2520%2520breakpoints%253A%2520%257B%250A%2520%2520%2520%2520sm%253A%25200%252C%250A%2520%2520%2520%2520md%253A%2520768%250A%2520%2520%257D%252C%250A%257D)%250A%250Aconst%2520App%2520%253D%2520()%2520%253D%253E%2520(%250A%2520%2520%253CMediaContextProvider%253E%250A%2520%2520%2520%2520%253CMedia%2520at%253D%2522sm%2522%253E%250A%2520%2520%2520%2520%2520%2520%253CMobileApp%2520%252F%253E%250A%2520%2520%2520%2520%253C%252FMedia%253E%250A%2520%2520%2520%2520%253CMedia%2520greaterThan%253D%2522sm%2522%253E%250A%2520%2520%2520%2520%2520%2520%253CDesktopApp%2520%252F%253E%250A%2520%2520%2520%2520%253C%252FMedia%253E%250A%2520%2520%253C%252FMediaContextProvider%253E%250A)%250A%250AReactDOM.render(%253CApp%2520%252F%253E%252C%2520document.getElementById(%2522react%2522)) 
+
+---
+
+# Error: Window is undefined
+
+
+![inline](images/missing.gif)
+
+^ Accessing browser specific elements in a server context results in errors.
+
+---
+
+
+# Error: Window is undefined 
 
 When building a site you might run into the `window is undefined` or `document is undefined` error. This happens when  logic within an app assume the **browser** window is defined in a **server**
 
@@ -181,27 +230,8 @@ When building a site you might run into the `window is undefined` or `document i
 
 ---
 
-# Immutable Layout
-
-- Avoid unnecessary layout shifts during page load
-
-- Implement layouts with placeholder/gap for expected client-side content
-
-* Use CSS instead of JS to handle the layout of the page
-
-^Another culprit in the previous example was using JS to position content instead of media queries. CSS loads before JS and is less resource-intensive. This can be a common issue when loading the page as there may still be some data unavailable as the page loads. You ca n try to design around this by leaving room for data to come in, for example in the Target nav there was no shift as the user/store specific data loaded. You should also use CSS instead of JavaScript for styling ;) 
-
-^Learn more at: https://www.speedpatterns.com/patterns/immutable_layout.html
-
----
-
-# Error: Window is undefined
-
-Accessing browser specific elements in a server context results in errors.
 
 
-
----
 
 
 # Error: Window is undefined
@@ -217,8 +247,9 @@ Your first inclination to resolve the undefined Window error might be to write s
 # Error: Window is undefined
 
 However, ReactDOM.hydrate:  
-  - expects that the rendered content is identical between the server and the client.
-  -  does not guarantee that attribute differences will be patched up in case of mismatches.
+👯‍♂️ expects that the rendered content is **identical**  between the server and the client.
+
+🙅🏾‍♀️ does not guarantee  that attribute differences will be patched up in case of mismatches.
 
 ^https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=javascript&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=true&pv=56px&ph=56px&ln=false&fl=1&fm=Hack&fs=14px&lh=133%25&si=false&es=2x&wm=false&code=%250A%2520%2520%2520%2520typeof%2520window%2520!%253D%253D%2520undefined%2520%253F%2520%252F%252F%2520render%2520component%2520%253A%2520%252F%252F%2520return%2520null
 
@@ -226,9 +257,9 @@ However, ReactDOM.hydrate:
 
 # Error: Document is undefined
 
-You want to avoid reconciliation error when ReactDOM.hydrates a site from HTML -> React.
+* Avoid reconciliation error when ReactDOM.hydrates a site from HTML -> React.
 
-It's better to wrap React that can only render when Window or document is defined in useEffect which only fires _after_ the component has mounted. 
+* Wrap React that can only render when Window or document is defined in useEffect which only fires _after_ the component has mounted. 
 
 
 ---
@@ -258,74 +289,23 @@ It's better to wrap React that can only render when Window or document is define
 
 ---
 
-
-<!-- These slides will be hidden
-
-# Art Direction: Rule of Least Power
-
-![inline](images/art-direction.gif)
-
-^ I want to walk through a time I recently used the rule of least power to make the initial page load faster and reduce relying on JavaScript to dynamically load different images on my site
-
----
-
-# Art Direction: HTML or Javascript?
-
-- HTML art direction can be used to dynamically load of images based on screen size using srcset attributes with `<img>` and `<source>` instead of JavaScript.
-
----
-
-# Art Direction: Why HTML?
-
-- Swapping images at different screen sizes can be done with JavaScript or CSS instead of native HTML attributes however using HTML can improve page loading performance as it prevents unnecessarily preloading two images
-
-
----
-
-
-# Art Direction in HTML
-
-![inline](images/animonica-art-direction.png)
-
-^In order to set up this functionality in HTML you can use the picture attribute and set media queries on each source image. It will return the first condition the is true and as a fall back it'll return the image from the img tag.
-
-
----
-
-
-![inline](images/art-direction-gatsby.png)
-
-
----
-
--->
 # Summary
 
 - In a Server-Side Rendered context it's important to consider _how_ the page loads and what data is or is not available on initial page load.
 - CSS is a better tool for managing responsiveness
-- Reference browser specific elements like document or window directly within `useEffect()` to prevent reconciliation error as the page hydrates
-
-
----
-
-# Related articles:
-
-https://www.aboutmonica.com/blog/less-javascript-is-more 
-
-https://www.aboutmonica.com/blog/2020-06-24-exploring-art-direction-in-gatsby
+- Reference browser specific elements like `document` or `window` directly within `useEffect()` to prevent reconciliation error as the page hydrates
 
 
 
 ---
-# Resources
+# Further Reading
+
 - https://www.gatsbyjs.org/docs/react-hydration/
 - https://joshwcomeau.com/react/the-perils-of-rehydration/
 - https://reactjs.org/docs/reconciliation.html
 - https://www.webpagetest.org/
 - https://github.com/artsy/fresnel
-
-
-
+- https://artsy.github.io/blog/2019/05/24/server-rendering-responsively/
 
 ---
 # Thank You!
