@@ -35,7 +35,7 @@ A server generates the initial HTML that loads in a browser. Frameworks like Nex
 
 ^ Let's take a step back. First what is server-side rendering? When a server generates the initial HTML that loads in a browser. Frameworks like NextJS and GatsbyJS support SSR out-of-the box.
 
-There are multiple types of Server-Side Rendering for example SSR can be used to render every single page request or only the initial page request. NextJS offers more server-side configurations than Gatsby. You may be familiar with Create React App which does NOT come with SSR functionality out of the box.
+^There are multiple types of Server-Side Rendering for example SSR can be used to render every single page request or only the initial page request. NextJS offers more server-side configurations than Gatsby. You may be familiar with Create React App which does NOT come with SSR functionality out of the box.
 
 ---
 
@@ -284,6 +284,44 @@ https://carbon.now.sh/?bg=rgba(251%2C244%2C255%2C1)&t=synthwave-84&wt=none&l=jav
 > ...Consider the rule of least power: Don’t use the more powerful language (JavaScript) until you’ve exhausted the capabilities of less powerful languages (HTML)."
 
 -- Iain Bean, Your blog doesn’t need a JavaScript framework
+
+---
+
+# Art Direction: Rule of Least Power
+
+![inline](images/art-direction.gif)
+
+^ I want to walk through a time I recently used the rule of least power in order to speed up the initial laod time and reduce relying on JavaScript to dynamically load different images on my site
+
+---
+
+# Art Direction: HTML or Javascript?
+
+- HTML art direction can be used to dynamically load of images based on screen size using srcset attributes with `<img>` and `<source>` instead of JavaScript.
+
+^ I was looking into how to display different images based on screen size and stumbled up HTML art direction which can be used to dynamially load images based on the screensize using HTML srcset attributes instead of JavaScript
+
+---
+
+# Art Direction: Why HTML?
+
+- Swapping images at different screen sizes can be done with JavaScript or CSS instead of native HTML attributes however using HTML can improve page loading performance as it prevents unnecessarily preloading two images.
+
+^ The cool thing about the HTML approach is that it can improve page loading performance as it allows the browser to only preload the image that is visible within the viewport. This can be especially beneficial if you need to display multiple images at various places within a site depending on the screen size.
+
+---
+
+# Art Direction in HTML
+
+![inline](images/animonica-art-direction.png)
+
+^In order to set up this functionality in HTML you can use the picture attribute and set media queries on each source image. It will return the first condition the is true and as a fall back it'll return the image from the img tag.
+
+---
+
+![inline](images/art-direction-gatsby.png)
+
+^ It's also possible to use the art-direction api in Gatsby with `gatsby-image`, their package for loading and transforming images from GraphQL. I definitely recommend checking that out if you are interested in exploring more performant ways to initially render images aside from just art direction.
 
 ---
 
